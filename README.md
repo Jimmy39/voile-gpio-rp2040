@@ -7,7 +7,7 @@ For more informations about voile library, see [voile-library](https://github.co
 
 This library use with:
 
-[voile_class_iopin](https://github.com/Jimmy39/voile_class_iopin)
+[voile-class-iopin](https://github.com/Jimmy39/voile-class-iopin)
 
 [voile-library](https://github.com/Jimmy39/voile-library)
 
@@ -52,4 +52,4 @@ struct voile_ioPin_t is the public part of struct voile_hardware_ioPin_gpioRp204
 
 ### Invocation
 
-For the method of invocation see [voile_class_iopin](https://github.com/Jimmy39/voile_class_iopin)
+For the method of invocation see [voile-class-iopin](https://github.com/Jimmy39/voile-class-iopin)
