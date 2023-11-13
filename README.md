@@ -50,6 +50,6 @@ extern struct voile_ioPin_t myIO;
 
 struct voile_ioPin_t is the public part of struct voile_hardware_ioPin_gpioRp2040_t, defined in voile_class_iopin.h.
 
-### Invocation
+### Usage
 
-For the method of invocation see [voile-class-iopin](https://github.com/Jimmy39/voile-class-iopin)
+See [voile-class-iopin](https://github.com/Jimmy39/voile-class-iopin)
