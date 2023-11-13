@@ -3,6 +3,14 @@ GPIO operation library for rp2040 in voile library
 
 For more informations about voile library, see [voile-library](https://github.com/Jimmy39/voile-library).
 
+## Dependence
+
+This library use with:
+
+[voile_class_iopin](https://github.com/Jimmy39/voile_class_iopin)
+
+[voile-library](https://github.com/Jimmy39/voile-library)
+
 ## Class voile_hardware_ioPin_gpioRp2040_t
 
 This library defines struct voile_hardware_ioPin_gpioRp2040_t:
