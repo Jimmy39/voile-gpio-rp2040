@@ -1,6 +1,7 @@
 #ifndef __VOILE_GPIO_RP2040_H__
 #define __VOILE_GPIO_RP2040_H__
 
+#include "voile_common.h"
 #include "voile_class_iopin.h"
 
 typedef uint8_t ioPin_pin_t;
