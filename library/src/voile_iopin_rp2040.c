@@ -2,23 +2,25 @@
  * @file voile_gpio_rp2040.c
  * @author JimmyWang
  * @brief 
- * @version	alpha20231015
- * @date 20231015
  */ 
 
-#include "voile_gpio_rp2040.h"
+#include "voile_iopin_rp2040.h"
 
-const struct voile_ioPinOperations_t voile_ioPinOperations_gpio_rp2040 = {
-    .Init = (enum voileFunctionReturn (*)(void *, enum voileIOmode, ...))ioPin_gpio_rp2040_Init,
-    .Write = (enum voileFunctionReturn (*)(void *, bool))ioPin_gpio_rp2040_Write,
-    .Read = (enum voileFunctionReturn (*)(void *, bool *))ioPin_gpio_rp2040_Read,
-    .ReadToReturn = (bool (*)(void *))ioPin_gpio_rp2040_ReadToReturn,
-    .Toggle = (enum voileFunctionReturn (*)(void *))ioPin_gpio_rp2040_Taggle
+voile_const_ioPin_Operate_t voile_const_ioPin_Operate_rp2040 = {
+    .Init = (voile_status_t (*)(const void *, voile_io_mode_t, ...))voile_ioPin_Operate_Init,
+    .Write = (voile_status_t (*)(const void *, bool))voile_ioPin_Operate_Write,
+    .Read = (voile_status_t (*)(const void *, bool *))voile_ioPin_Operate_Read,
+    .Toggle = (voile_status_t (*)(const void *))voile_ioPin_Operate_Taggle
 };
+
+voile_const_ioPin_Get_t voile_const_ioPin_Get_rp2040 = {
+    .Read = (bool (*)(const void *))voile_ioPin_Get_Read
+};
+
 
 uint32_t IO_RP2040_IsOpenDrainMask = 0;
 
-enum voileFunctionReturn ioPin_gpio_rp2040_Init(struct voile_hardware_ioPin_gpioRp2040_t *ioPin_p, enum voileIOmode mode, bool value){
+voile_status_t voile_ioPin_Operate_Init(voile_const_internal_ioPin_rp2040_t *ioPin_p, voile_io_mode_t mode, bool value) {
     uint32_t mask = 1ul << ioPin_p->pin;
     if(ioPin_p->pin > 32){
         return hardwareUnsupportedError;
@@ -47,21 +49,21 @@ enum voileFunctionReturn ioPin_gpio_rp2040_Init(struct voile_hardware_ioPin_gpio
             IO_RP2040_IsOpenDrainMask |= mask;                          // write value to gpio_oe
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] |= 1ul << 3;     // enable pull up resistor
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 2);  // disable pull down resistor
-            ioPin_gpio_rp2040_Write(ioPin_p, value);                    // write value
+            voile_ioPin_Operate_Write(ioPin_p, value);                  // write value
             break;
         case IOmodePushPull:
             IO_RP2040_IsOpenDrainMask &= ~mask;                         // write value to gpio_out
             gpio_rp2040_sio->gpio_oe_set = mask;                        // enable output
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 3);  // disable pull up resistor
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 2);  // disable pull down resistor
-            ioPin_gpio_rp2040_Write(ioPin_p, value);                    // write value
+            voile_ioPin_Operate_Write(ioPin_p, value);                  // write value
             break;
         case IOmodeOpenDrain:
             gpio_rp2040_sio->gpio_out_clr = mask;                       // set gpio output low
             IO_RP2040_IsOpenDrainMask |= mask;                          // write value to gpio_oe
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 3);  // disable pull up resistor
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 2);  // disable pull down resistor
-            ioPin_gpio_rp2040_Write(ioPin_p, value);                    // write value
+            voile_ioPin_Operate_Write(ioPin_p, value);                  // write value
             break;
         default:
             return hardwareUnsupportedError;
