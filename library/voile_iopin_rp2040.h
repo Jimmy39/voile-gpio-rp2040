@@ -2,10 +2,7 @@
 #define __VOILE_IOPIN_RP2040_H__
 
 #include "voile_interface_iopin.h"
-
-typedef volatile uint32_t io_rw_32;
-typedef const volatile uint32_t io_ro_32;
-typedef volatile uint32_t io_wo_32;
+#include "voile_register_rp2040.h"
 
 
 /**
@@ -37,50 +34,6 @@ extern uint32_t IO_RP2040_IsOpenDrainMask;
 #define VOILE_IOPIN_RP2040_FUNCINIT  \
     .Operate = &voile_const_ioPin_Operate_rp2040,    \
     .Get = &voile_const_ioPin_Get_rp2040
-
-/*********Register definition*********/
-
-// Reference to datasheet: https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf#tab-registerlist_sio
-struct gpio_rp2040_sio_t{
-    uint32_t unused0; // CPUID
-    io_ro_32 gpio_in;
-    uint32_t unused1; // GPIO_HI_IN
-    uint32_t unused2;
-    io_rw_32 gpio_out;
-    io_wo_32 gpio_out_set;
-    io_wo_32 gpio_out_clr;
-    io_wo_32 gpio_out_xor;
-    io_rw_32 gpio_oe;
-    io_wo_32 gpio_oe_set;
-    io_wo_32 gpio_oe_clr;
-    io_wo_32 gpio_oe_xor;
-    //other unused
-};
-
-#define gpio_rp2040_sio ((struct gpio_rp2040_sio_t *)0xd0000000u)
-
-// Reference to datasheet: https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf#tab-registerlist_pads_bank0
-struct gpio_rp2040_pads_bank0_t{
-    io_rw_32 voltage_select;
-    io_rw_32 gpio[30u];
-};
-
-#define gpio_rp2040_pads_bank0 ((struct gpio_rp2040_pads_bank0_t *)0x4001c000u)
-
-// Reference to datasheet: https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf#tab-registerlist_io_bank0
-struct gpio_rp2040_io_bank0_gpio_t{
-    io_ro_32 status;
-    io_rw_32 ctrl;
-};
-struct gpio_rp2040_io_bank0_t{
-    struct gpio_rp2040_io_bank0_gpio_t gpio[30];
-    //other unused
-};
-
-#define gpio_rp2040_io_bank0 ((struct gpio_rp2040_io_bank0_t *)0x40014000u)
-
-
-
 
 /**
  * @brief Initialise or reinitialise a IO and set IO mode and default output value
@@ -123,11 +76,11 @@ voile_status_t voile_ioPin_Operate_Init(voile_const_internal_ioPin_rp2040_t *, v
  */
 static inline voile_status_t voile_ioPin_Operate_Write(voile_const_internal_ioPin_rp2040_t *ioPin_p, bool value){
     if (value){
-        gpio_rp2040_sio->gpio_out_set = (1ul << ioPin_p->pin)&(~IO_RP2040_IsOpenDrainMask);
-        gpio_rp2040_sio->gpio_oe_clr = (1ul << ioPin_p->pin)&(IO_RP2040_IsOpenDrainMask);
+        voile_register_rp2040_SIO->GPIO_OUT_SET = (1ul << ioPin_p->pin)&(~IO_RP2040_IsOpenDrainMask);
+        voile_register_rp2040_SIO->GPIO_OE_CLR = (1ul << ioPin_p->pin)&(IO_RP2040_IsOpenDrainMask);
     }else{
-        gpio_rp2040_sio->gpio_out_clr = (1ul << ioPin_p->pin)&(~IO_RP2040_IsOpenDrainMask);
-        gpio_rp2040_sio->gpio_oe_set = (1ul << ioPin_p->pin)&(IO_RP2040_IsOpenDrainMask);
+        voile_register_rp2040_SIO->GPIO_OUT_CLR = (1ul << ioPin_p->pin)&(~IO_RP2040_IsOpenDrainMask);
+        voile_register_rp2040_SIO->GPIO_OE_SET = (1ul << ioPin_p->pin)&(IO_RP2040_IsOpenDrainMask);
     }
     return success;
 }
@@ -147,7 +100,7 @@ static inline voile_status_t voile_ioPin_Operate_Write(voile_const_internal_ioPi
  *  
  */
 static inline voile_status_t voile_ioPin_Operate_Read(voile_const_internal_ioPin_rp2040_t *ioPin_p, bool *value){
-    *value = !!((1ul << ioPin_p->pin) & gpio_rp2040_sio->gpio_in);
+    *value = !!((1ul << ioPin_p->pin) & voile_register_rp2040_SIO->GPIO_IN);
     return success;
 }
 
@@ -165,8 +118,8 @@ static inline voile_status_t voile_ioPin_Operate_Read(voile_const_internal_ioPin
  *  
  */
 static inline voile_status_t voile_ioPin_Operate_Taggle(voile_const_internal_ioPin_rp2040_t *ioPin_p){
-    gpio_rp2040_sio->gpio_out_xor = (1ul << ioPin_p->pin)&(~IO_RP2040_IsOpenDrainMask);
-    gpio_rp2040_sio->gpio_oe_xor = (1ul << ioPin_p->pin)&(IO_RP2040_IsOpenDrainMask);
+    voile_register_rp2040_SIO->GPIO_OUT_XOR = (1ul << ioPin_p->pin)&(~IO_RP2040_IsOpenDrainMask);
+    voile_register_rp2040_SIO->GPIO_OE_XOR = (1ul << ioPin_p->pin)&(IO_RP2040_IsOpenDrainMask);
     return success;
 }
 
@@ -184,7 +137,7 @@ static inline voile_status_t voile_ioPin_Operate_Taggle(voile_const_internal_ioP
  *  
  */
 static inline bool voile_ioPin_Get_Read(voile_const_internal_ioPin_rp2040_t *ioPin_p){
-    return !!((1ul << ioPin_p->pin) & gpio_rp2040_sio->gpio_in);
+    return !!((1ul << ioPin_p->pin) & voile_register_rp2040_SIO->GPIO_IN);
 }
 
 

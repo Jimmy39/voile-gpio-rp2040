@@ -27,25 +27,25 @@ voile_status_t voile_ioPin_Operate_Init(voile_const_internal_ioPin_rp2040_t *ioP
     }
     switch(mode){
         case IOmodeInput:
-            gpio_rp2040_sio->gpio_oe_clr = mask;                        // disable output
+            voile_register_rp2040_SIO->GPIO_OE_CLR = mask;                        // disable output
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 3);  // disable pull up resistor
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 2);  // disable pull down resistor
             IO_RP2040_IsOpenDrainMask &= ~mask;                         // write value to gpio_out
             break;
         case IOmodeInputWithPullUpResistor:
-            gpio_rp2040_sio->gpio_oe_clr = mask;                        // disable output
+            voile_register_rp2040_SIO->GPIO_OE_CLR = mask;                        // disable output
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] |= 1ul << 3;     // enable pull up resistor
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 2);  // disable pull down resistor
             IO_RP2040_IsOpenDrainMask &= ~mask;                         // write value to gpio_out
             break;
         case IOmodeInputWithPullDownResistor:
-            gpio_rp2040_sio->gpio_oe_clr = mask;                        // disable output
+            voile_register_rp2040_SIO->GPIO_OE_CLR = mask;                        // disable output
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 3);  // disable pull up resistor
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] |= 1ul << 2;     // enable pull down resistor
             IO_RP2040_IsOpenDrainMask &= ~mask;                         // write value to gpio_out
             break;
         case IOmodeQuasiBidirectional:
-            gpio_rp2040_sio->gpio_out_clr = mask;                       // set gpio output low
+            voile_register_rp2040_SIO->GPIO_OUT_CLR = mask;                       // set gpio output low
             IO_RP2040_IsOpenDrainMask |= mask;                          // write value to gpio_oe
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] |= 1ul << 3;     // enable pull up resistor
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 2);  // disable pull down resistor
@@ -53,13 +53,13 @@ voile_status_t voile_ioPin_Operate_Init(voile_const_internal_ioPin_rp2040_t *ioP
             break;
         case IOmodePushPull:
             IO_RP2040_IsOpenDrainMask &= ~mask;                         // write value to gpio_out
-            gpio_rp2040_sio->gpio_oe_set = mask;                        // enable output
+            voile_register_rp2040_SIO->GPIO_OE_SET = mask;                        // enable output
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 3);  // disable pull up resistor
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 2);  // disable pull down resistor
             voile_ioPin_Operate_Write(ioPin_p, value);                  // write value
             break;
         case IOmodeOpenDrain:
-            gpio_rp2040_sio->gpio_out_clr = mask;                       // set gpio output low
+            voile_register_rp2040_SIO->GPIO_OUT_CLR = mask;                       // set gpio output low
             IO_RP2040_IsOpenDrainMask |= mask;                          // write value to gpio_oe
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 3);  // disable pull up resistor
             gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 2);  // disable pull down resistor
