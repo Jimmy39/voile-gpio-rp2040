@@ -7,49 +7,63 @@ For more informations about voile library, see [voile-library](https://github.co
 
 This library use with:
 
-[voile-class-iopin](https://github.com/Jimmy39/voile-class-iopin)
+**[voile-interface-iopin](https://github.com/Jimmy39/voile-interface-iopin)** : Define interface to use io.
 
-[voile-library](https://github.com/Jimmy39/voile-library)
+**[voile_register_rp2040.h](https://github.com/Jimmy39/voile-register/blob/main/library/raspberrypi/voile_register_rp2040.h)** : Registers defination.
 
-## Class voile_hardware_ioPin_gpioRp2040_t
+**[voile-library](https://github.com/Jimmy39/voile-library)** : Some common defination.
 
-This library defines struct voile_hardware_ioPin_gpioRp2040_t:
+## Class voile_const_internal_ioPin_rp2040_t
+
+This library defines struct ```voile_const_internal_ioPin_rp2040_t```:
 
 ```C
 /**
  * @brief Single io for gpio in rp2040
  * 
  */
-struct voile_hardware_ioPin_gpioRp2040_t{
-    const struct voile_ioPinOperations_t *Operation;    ///< Functions of ioPin
-    const uint8_t pin;                                  ///< Pin number
-};
+typedef const struct{
+
+    // Operate ioPin
+    voile_const_ioPin_Operate_t *Operate;
+
+    // Get something from io
+    voile_const_ioPin_Get_t *Get;
+    
+    // Pin number
+    const uint8_t pin;
+
+} voile_const_internal_ioPin_rp2040_t;
 ```
 ### Define
 
-You should define and init struct at _devicelist.c_
+You should define and init struct at *devicelist.c*
 
 ```C
-#include "voile_gpio_rp2040.h"
+#include "voile_ioPin_rp2040.h"
 
-struct voile_hardware_ioPin_gpioRp2040_t myIO = {
-    .Operation = &voile_ioPinOperations_gpio_rp2040,
+voile_const_internal_ioPin_rp2040_t myIO = {
+    FUNCINIT,
     .pin = 25       // you pin number
 };
+
+// some else voile_const_internal_ioPin_rp2040_t structs defination
+
+#include "voile_ioPin_rp2040_end.h"
 ```
 
 ### Declare
 
-And declare at _devicelist.h_ as __struct voile_ioPin_t__
+And declare at *devicelist.h* as struct ```voile_ioPin_t```
 
 ```C
-#include "voile_class_iopin.h"
+#include "voile_interface_iopin.h"
 
-extern struct voile_ioPin_t myIO;
+extern voile_ioPin_t myIO;
 ```
 
-struct voile_ioPin_t is the public part of struct voile_hardware_ioPin_gpioRp2040_t, defined in voile_class_iopin.h.
+struct ```voile_ioPin_t``` is the public part of struct ```voile_const_internal_ioPin_rp2040_t```, defined in [voile-interface-iopin](https://github.com/Jimmy39/voile-interface-iopin).
 
 ### Usage
 
-See [voile-class-iopin](https://github.com/Jimmy39/voile-class-iopin)
+See [voile-interface-iopin](https://github.com/Jimmy39/voile-interface-iopin).

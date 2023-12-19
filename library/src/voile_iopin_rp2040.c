@@ -27,50 +27,50 @@ voile_status_t voile_ioPin_Operate_Init(voile_const_internal_ioPin_rp2040_t *ioP
     }
     switch(mode){
         case IOmodeInput:
-            voile_register_rp2040_SIO->GPIO_OE_CLR = mask;                        // disable output
-            gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 3);  // disable pull up resistor
-            gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 2);  // disable pull down resistor
-            IO_RP2040_IsOpenDrainMask &= ~mask;                         // write value to gpio_out
+            voile_rp2040_SIO->GPIO_OE_CLR = mask;
+            voile_rp2040_PADS_BANK0->GPIO[ioPin_p->pin].selectBit.PUE = 0;
+            voile_rp2040_PADS_BANK0->GPIO[ioPin_p->pin].selectBit.PDE = 0;
+            IO_RP2040_IsOpenDrainMask &= ~mask;
             break;
         case IOmodeInputWithPullUpResistor:
-            voile_register_rp2040_SIO->GPIO_OE_CLR = mask;                        // disable output
-            gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] |= 1ul << 3;     // enable pull up resistor
-            gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 2);  // disable pull down resistor
-            IO_RP2040_IsOpenDrainMask &= ~mask;                         // write value to gpio_out
+            voile_rp2040_SIO->GPIO_OE_CLR = mask;
+            voile_rp2040_PADS_BANK0->GPIO[ioPin_p->pin].selectBit.PUE = 1;
+            voile_rp2040_PADS_BANK0->GPIO[ioPin_p->pin].selectBit.PDE = 0;
+            IO_RP2040_IsOpenDrainMask &= ~mask;
             break;
         case IOmodeInputWithPullDownResistor:
-            voile_register_rp2040_SIO->GPIO_OE_CLR = mask;                        // disable output
-            gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 3);  // disable pull up resistor
-            gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] |= 1ul << 2;     // enable pull down resistor
-            IO_RP2040_IsOpenDrainMask &= ~mask;                         // write value to gpio_out
+            voile_rp2040_SIO->GPIO_OE_CLR = mask;
+            voile_rp2040_PADS_BANK0->GPIO[ioPin_p->pin].selectBit.PUE = 0;
+            voile_rp2040_PADS_BANK0->GPIO[ioPin_p->pin].selectBit.PDE = 1;
+            IO_RP2040_IsOpenDrainMask &= ~mask;
             break;
         case IOmodeQuasiBidirectional:
-            voile_register_rp2040_SIO->GPIO_OUT_CLR = mask;                       // set gpio output low
-            IO_RP2040_IsOpenDrainMask |= mask;                          // write value to gpio_oe
-            gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] |= 1ul << 3;     // enable pull up resistor
-            gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 2);  // disable pull down resistor
-            voile_ioPin_Operate_Write(ioPin_p, value);                  // write value
+            voile_rp2040_SIO->GPIO_OUT_CLR = mask;
+            voile_rp2040_PADS_BANK0->GPIO[ioPin_p->pin].selectBit.PUE = 1;
+            voile_rp2040_PADS_BANK0->GPIO[ioPin_p->pin].selectBit.PDE = 0;
+            IO_RP2040_IsOpenDrainMask |= mask;
+            voile_ioPin_Operate_Write(ioPin_p, value);
             break;
         case IOmodePushPull:
-            IO_RP2040_IsOpenDrainMask &= ~mask;                         // write value to gpio_out
-            voile_register_rp2040_SIO->GPIO_OE_SET = mask;                        // enable output
-            gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 3);  // disable pull up resistor
-            gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 2);  // disable pull down resistor
-            voile_ioPin_Operate_Write(ioPin_p, value);                  // write value
+            voile_rp2040_SIO->GPIO_OE_SET = mask;
+            voile_rp2040_PADS_BANK0->GPIO[ioPin_p->pin].selectBit.PUE = 0;
+            voile_rp2040_PADS_BANK0->GPIO[ioPin_p->pin].selectBit.PDE = 0;
+            IO_RP2040_IsOpenDrainMask &= ~mask;
+            voile_ioPin_Operate_Write(ioPin_p, value);
             break;
         case IOmodeOpenDrain:
-            voile_register_rp2040_SIO->GPIO_OUT_CLR = mask;                       // set gpio output low
-            IO_RP2040_IsOpenDrainMask |= mask;                          // write value to gpio_oe
-            gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 3);  // disable pull up resistor
-            gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 2);  // disable pull down resistor
-            voile_ioPin_Operate_Write(ioPin_p, value);                  // write value
+            voile_rp2040_SIO->GPIO_OUT_CLR = mask;
+            voile_rp2040_PADS_BANK0->GPIO[ioPin_p->pin].selectBit.PUE = 0;
+            voile_rp2040_PADS_BANK0->GPIO[ioPin_p->pin].selectBit.PDE = 0;
+            IO_RP2040_IsOpenDrainMask |= mask;
+            voile_ioPin_Operate_Write(ioPin_p, value);
             break;
         default:
             return hardwareUnsupportedError;
     }
-    gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] |= 1ul << 6;     // input enable
-    gpio_rp2040_pads_bank0->gpio[ioPin_p->pin] &= ~(1ul << 7);  // output enable
-    gpio_rp2040_io_bank0->gpio[ioPin_p->pin].ctrl = 5;          // gpio mux sio
+    voile_rp2040_PADS_BANK0->GPIO[ioPin_p->pin].selectBit.IE = 1;
+    voile_rp2040_PADS_BANK0->GPIO[ioPin_p->pin].selectBit.OD = 0;
+    voile_rp2040_IO_BANK0->GPIO[ioPin_p->pin].CTRL.selectBit.FUNCSEL = 5;
     return success;
 }
 

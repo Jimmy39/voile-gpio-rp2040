@@ -13,8 +13,10 @@ typedef const struct{
 
     // Operate ioPin
     voile_const_ioPin_Operate_t *Operate;
+
     // Get something from io
     voile_const_ioPin_Get_t *Get;
+    
     // Pin number
     const uint8_t pin;
 
@@ -31,7 +33,7 @@ extern voile_const_ioPin_Get_t voile_const_ioPin_Get_rp2040;
 extern uint32_t IO_RP2040_IsOpenDrainMask;
 
 // This micro use to init all function 
-#define VOILE_IOPIN_RP2040_FUNCINIT  \
+#define FUNCINIT  \
     .Operate = &voile_const_ioPin_Operate_rp2040,    \
     .Get = &voile_const_ioPin_Get_rp2040
 
@@ -76,11 +78,11 @@ voile_status_t voile_ioPin_Operate_Init(voile_const_internal_ioPin_rp2040_t *, v
  */
 static inline voile_status_t voile_ioPin_Operate_Write(voile_const_internal_ioPin_rp2040_t *ioPin_p, bool value){
     if (value){
-        voile_register_rp2040_SIO->GPIO_OUT_SET = (1ul << ioPin_p->pin)&(~IO_RP2040_IsOpenDrainMask);
-        voile_register_rp2040_SIO->GPIO_OE_CLR = (1ul << ioPin_p->pin)&(IO_RP2040_IsOpenDrainMask);
+        voile_rp2040_SIO->GPIO_OUT_SET = (1ul << ioPin_p->pin)&(~IO_RP2040_IsOpenDrainMask);
+        voile_rp2040_SIO->GPIO_OE_CLR = (1ul << ioPin_p->pin)&(IO_RP2040_IsOpenDrainMask);
     }else{
-        voile_register_rp2040_SIO->GPIO_OUT_CLR = (1ul << ioPin_p->pin)&(~IO_RP2040_IsOpenDrainMask);
-        voile_register_rp2040_SIO->GPIO_OE_SET = (1ul << ioPin_p->pin)&(IO_RP2040_IsOpenDrainMask);
+        voile_rp2040_SIO->GPIO_OUT_CLR = (1ul << ioPin_p->pin)&(~IO_RP2040_IsOpenDrainMask);
+        voile_rp2040_SIO->GPIO_OE_SET = (1ul << ioPin_p->pin)&(IO_RP2040_IsOpenDrainMask);
     }
     return success;
 }
@@ -100,7 +102,7 @@ static inline voile_status_t voile_ioPin_Operate_Write(voile_const_internal_ioPi
  *  
  */
 static inline voile_status_t voile_ioPin_Operate_Read(voile_const_internal_ioPin_rp2040_t *ioPin_p, bool *value){
-    *value = !!((1ul << ioPin_p->pin) & voile_register_rp2040_SIO->GPIO_IN);
+    *value = !!((1ul << ioPin_p->pin) & voile_rp2040_SIO->GPIO_IN);
     return success;
 }
 
@@ -118,8 +120,8 @@ static inline voile_status_t voile_ioPin_Operate_Read(voile_const_internal_ioPin
  *  
  */
 static inline voile_status_t voile_ioPin_Operate_Taggle(voile_const_internal_ioPin_rp2040_t *ioPin_p){
-    voile_register_rp2040_SIO->GPIO_OUT_XOR = (1ul << ioPin_p->pin)&(~IO_RP2040_IsOpenDrainMask);
-    voile_register_rp2040_SIO->GPIO_OE_XOR = (1ul << ioPin_p->pin)&(IO_RP2040_IsOpenDrainMask);
+    voile_rp2040_SIO->GPIO_OUT_XOR = (1ul << ioPin_p->pin)&(~IO_RP2040_IsOpenDrainMask);
+    voile_rp2040_SIO->GPIO_OE_XOR = (1ul << ioPin_p->pin)&(IO_RP2040_IsOpenDrainMask);
     return success;
 }
 
@@ -137,7 +139,7 @@ static inline voile_status_t voile_ioPin_Operate_Taggle(voile_const_internal_ioP
  *  
  */
 static inline bool voile_ioPin_Get_Read(voile_const_internal_ioPin_rp2040_t *ioPin_p){
-    return !!((1ul << ioPin_p->pin) & voile_register_rp2040_SIO->GPIO_IN);
+    return !!((1ul << ioPin_p->pin) & voile_rp2040_SIO->GPIO_IN);
 }
 
 
