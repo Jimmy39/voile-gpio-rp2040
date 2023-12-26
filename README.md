@@ -54,15 +54,15 @@ voile_const_internal_ioPin_rp2040_t myIO = {
 
 ### Declare
 
-And declare at *devicelist.h* as struct ```voile_ioPin_t```
+And declare at *devicelist.h* as struct ```voile_const_ioPin_t```
 
 ```C
 #include "voile_interface_iopin.h"
 
-extern voile_ioPin_t myIO;
+extern voile_const_ioPin_t myIO;
 ```
 
-struct ```voile_ioPin_t``` is the public part of struct ```voile_const_internal_ioPin_rp2040_t```, defined in [voile-interface-iopin](https://github.com/Jimmy39/voile-interface-iopin).
+struct ```voile_const_ioPin_t``` is the public part of struct ```voile_const_internal_ioPin_rp2040_t```, defined in [voile-interface-iopin](https://github.com/Jimmy39/voile-interface-iopin).
 
 ### Usage
 
