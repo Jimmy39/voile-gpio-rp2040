@@ -60,7 +60,7 @@ extern uint32_t IO_RP2040_IsOpenDrainMask;
  * - The push-pull mode.
  * 
  */
-voile_status_t voile_ioPin_Operate_Init(voile_const_internal_ioPin_rp2040_t *, voile_io_mode_t, bool value);
+voile_status_t voile_ioPin_Operate_Init(voile_const_internal_ioPin_rp2040_t *, voile_io_mode_t, bool);
 
 
 /**
