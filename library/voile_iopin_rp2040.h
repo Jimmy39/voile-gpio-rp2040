@@ -2,7 +2,7 @@
  * @file voile_iopin_rp2040.h
  * @author JimmyWang
  * @brief Define class ioPin for rp2040
- * @version alpha-240116
+ * @version alpha-240117
  * 
  */
 #ifndef __VOILE_IOPIN_RP2040_H__
@@ -193,9 +193,7 @@ static inline voile_status_t voile_ioPin_Operate_ReadRegister(voile_const_intern
  * @endcode
  *  
  */
-static inline bool voile_ioPin_Get_Mode(voile_const_internal_ioPin_rp2040_t *) {
-    ;
-}
+voile_io_mode_t voile_ioPin_Get_Mode(voile_const_internal_ioPin_rp2040_t *);
 
 
 /**
