@@ -2,7 +2,7 @@
  * @file voile_iopin_rp2040.h
  * @author JimmyWang
  * @brief Define class ioPin for rp2040
- * @version alpha-240117
+ * @version alpha-240118
  * 
  */
 #ifndef __VOILE_IOPIN_RP2040_H__
@@ -172,8 +172,14 @@ static inline voile_status_t voile_ioPin_Operate_Taggle(voile_const_internal_ioP
  * @endcode
  *  
  */
-static inline voile_status_t voile_ioPin_Operate_ReadRegister(voile_const_internal_ioPin_rp2040_t *, bool *) {
-    ;
+static inline voile_status_t voile_ioPin_Operate_ReadRegister(voile_const_internal_ioPin_rp2040_t *this, bool *value) {
+    if (IO_RP2040_IsOpenDrainMask & (1ul << this->pin)) {
+        *value = !(voile_rp2040_SIO->GPIO_OE & (1ul << this->pin));
+    }
+    else {
+        *value = !!(voile_rp2040_SIO->GPIO_OUT & (1ul << this->pin));
+    }
+    return success;
 }
 
 
@@ -226,8 +232,13 @@ static inline bool voile_ioPin_Get_Read(voile_const_internal_ioPin_rp2040_t *ioP
  * @endcode
  *  
  */
-static inline bool voile_ioPin_Get_ReadRegister(voile_const_internal_ioPin_rp2040_t *) {
-    ;
+static inline bool voile_ioPin_Get_ReadRegister(voile_const_internal_ioPin_rp2040_t *this) {
+    if (IO_RP2040_IsOpenDrainMask & (1ul << this->pin)) {
+        return !(voile_rp2040_SIO->GPIO_OE & (1ul << this->pin));
+    }
+    else {
+        return !!(voile_rp2040_SIO->GPIO_OUT & (1ul << this->pin));
+    }
 }
 
 #endif // !__VOILE_IOPIN_RP2040_H__

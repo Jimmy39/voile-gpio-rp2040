@@ -2,7 +2,7 @@
  * @file voile_iopin_rp2040.c
  * @author JimmyWang
  * @brief Define class ioPin for rp2040
- * @version alpha-240117
+ * @version alpha-240118
  * 
  */
 
@@ -13,12 +13,14 @@ voile_const_ioPin_Operate_t voile_const_ioPin_Operate_rp2040 = {
     .SetMode = (voile_status_t (*)(voile_const_ioPin_t *, voile_io_mode_t))voile_ioPin_Operate_SetMode,
     .Write = (voile_status_t (*)(voile_const_ioPin_t *, bool))voile_ioPin_Operate_Write,
     .Read = (voile_status_t (*)(voile_const_ioPin_t *, bool *))voile_ioPin_Operate_Read,
-    .Toggle = (voile_status_t (*)(voile_const_ioPin_t *))voile_ioPin_Operate_Taggle
+    .Toggle = (voile_status_t (*)(voile_const_ioPin_t *))voile_ioPin_Operate_Taggle,
+    .ReadRegister = (voile_status_t (*)(voile_const_ioPin_t *, bool *))voile_ioPin_Operate_ReadRegister
 };
 
 voile_const_ioPin_Get_t voile_const_ioPin_Get_rp2040 = {
-    .Mode = (voile_io_mode_t (*)(const voile_const_ioPin_t *))voile_ioPin_Get_Mode,
-    .Read = (bool (*)(voile_const_ioPin_t *))voile_ioPin_Get_Read
+    .Mode = (voile_io_mode_t (*)(voile_const_ioPin_t *))voile_ioPin_Get_Mode,
+    .Read = (bool (*)(voile_const_ioPin_t *))voile_ioPin_Get_Read,
+    .ReadRegister = (bool (*)(voile_const_ioPin_t *))voile_ioPin_Get_ReadRegister
 };
 
 
